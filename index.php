@@ -68,33 +68,14 @@ class wechatCallbackapiTest
 				if(!empty( $keyword ))
                 {
               		$msgType = "text";
-                    $conn = $this->dbconnect();
-                    $result=mysqli_query($conn,"SELECT * FROM aTest WHERE id='$fromUsername'");
-                    $mysql_arr=mysqli_fetch_assoc($result);
-                    mysqli_set_charset($conn , "utf-8");
-                    if ($mysql_arr['model']=='0') {
-                        if ($keyword == '你好')
-                        {
-                            $contentStr = "恩~我很好";
-                        } elseif ($keyword =='你才是单身狗')
-                        {
-                            $contentStr = "哦~是吗？";
-                        }elseif ($keyword =='我不是单身狗') {
-                            $contentStr = "那你很棒哦";
-                        } else
-                        {
-                            $contentStr = "你好啊 单身狗";
-                        }
-                    }else{
-                        if ($keyword == '退出'){
-                            $contentStr = "成功退出反馈模式";
-                            mysqli_query($conn,"UPDATE aTest SET model='0' WHERE id='$fromUsername'");
-                        }else{
-                            $suggestion = $mysql_arr['suggestion']."--".$keyword;
-                            mysqli_query($conn,"UPDATE aTest SET suggestion='$suggestion'  WHERE id='$fromUsername'");
-                            $contentStr = "多谢您的建议,回复‘退出’即可‘退出此模式";
-                        }
+                    $robotUrl = 'http://api.qingyunke.com/api.php?key=free&appid=0&msg=' . $urlencode($keyword);
+                    $robotMsg = file_get_contents($robotUrl);
+                    if ($robotMsg['result'] == 0) {
+                        $contentStr = $robotMsg['content'];
+                    } else {
+                        $contentStr = "抱歉，暂无此功能";
                     }
+                   
                 	$resultStr = sprintf($textTpl, $fromUsername, $toUsername, $time, $msgType, $contentStr);
                 	echo $resultStr;
                 }else{
