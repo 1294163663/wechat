@@ -1,7 +1,4 @@
 <?php
-/**
-  * wechat php test
-  */
 //define your token
 define("TOKEN", "weixin");
 $wechatObj = new wechatCallbackapiTest();
@@ -68,10 +65,10 @@ class wechatCallbackapiTest
 				if(!empty( $keyword ))
                 {
               		$msgType = "text";
-                    $robotUrl = 'http://api.qingyunke.com/api.php?key=free&appid=0&msg=' . $urlencode($keyword);
-                    $robotMsg = file_get_contents($robotUrl);
-                    if ($robotMsg['result'] == 0) {
-                        $contentStr = $robotMsg['content'];
+                    $robotUrl = 'http://api.qingyunke.com/api.php?key=free&appid=0&msg=' . urlencode($keyword);
+                    $robotMsg = json_decode(file_get_contents($robotUrl));
+                    if ($robotMsg->result == 0) {
+                        $contentStr = $robotMsg->content;
                         $contentStr = str_replace("{br}", "\n", $contentStr);
                     } else {
                         $contentStr = "抱歉，暂无此功能";
