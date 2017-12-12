@@ -1,7 +1,4 @@
 <?php
-/**
-  * wechat php test
-  */
 //define your token
 define("TOKEN", "weixin");
 $wechatObj = new wechatCallbackapiTest();
@@ -24,7 +21,7 @@ class wechatCallbackapiTest
     public function responseMsg()
     {
 		//get post data, May be due to the different environments
-		$postStr = file_get_contents("php://input");
+		$postStr = $GLOBALS["HTTP_RAW_POST_DATA"];
       	//extract post data
 		if (!empty($postStr)){
                 /* libxml_disable_entity_loader is to prevent XML eXternal Entity Injection,
@@ -69,10 +66,10 @@ class wechatCallbackapiTest
                 {
               		$msgType = "text";
                     $robotUrl = 'http://api.qingyunke.com/api.php?key=free&appid=0&msg=' . urlencode($keyword);
-                    $robotMsg = file_get_contents($robotUrl);
-                    if ($robotMsg['result'] == 0) {
-                        $contentStr = $robotMsg['content'];
-                        $contentStr = str_replace('{br}', "\n", $contentStr);
+                    $robotMsg = json_decode(file_get_contents($robotUrl));
+                    if ($robotMsg->result == 0) {
+                        $contentStr = $robotMsg->content;
+                        $contentStr = str_replace("{br}", "\n", $contentStr);
                     } else {
                         $contentStr = "抱歉，暂无此功能";
                     }
